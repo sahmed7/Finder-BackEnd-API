@@ -2,7 +2,7 @@ package finderapi.demo.controller;
 
 import finderapi.demo.model.City;
 import finderapi.demo.service.CityService;
-import finderapi.demo.service.UtilityService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,6 +11,7 @@ import java.util.List;
 @RequestMapping(path = "/api")
 public class CityController {
 
+    @Autowired
     private CityService cityService;
 
     @GetMapping("/hello")
@@ -26,7 +27,6 @@ public class CityController {
 
     @PostMapping("/cities")
     public City createCity(@RequestBody City cityObject){
-        System.out.println("calling createCity ===>");
         return cityService.createCity(cityObject);
     }
 }

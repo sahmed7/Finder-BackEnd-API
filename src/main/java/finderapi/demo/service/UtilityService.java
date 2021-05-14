@@ -10,7 +10,9 @@ public class UtilityService {
     public User getAuthenticatedUser() {
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser"))
             throw new InformationForbiddenException("Forbidden");
+        System.out.println("Calling MyUserDetails ==>");
         MyUserDetails userDetails = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println(userDetails);
         return userDetails.getUser();
     }
 }
