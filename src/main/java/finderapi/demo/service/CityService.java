@@ -20,6 +20,15 @@ public class CityService {
 
     public UtilityService utility = new UtilityService();
 
+    public City getCity(Long cityId){
+        User user = utility.getAuthenticatedUser();
+        if (cityRepository.findByIdAndUserId(cityId, user.getId()) != null){
+            return cityRepository.findByIdAndUserId(cityId, user.getId());
+        } else {
+            throw new InformationNotFoundException("City with id " + cityId + " does not exist!");
+        }
+    }
+
     public List<City> getCities() {
         User user = utility.getAuthenticatedUser();
         List<City> cities = cityRepository.findAll();

@@ -8,8 +8,7 @@ import java.util.List;
 
 @Repository
 public interface CityRepository extends JpaRepository<City, Long> {
-
-    City findByIdAndUserId(Long categoryId, Long userId);
+    City findByIdAndUserId(Long cityId, Long userId);
 
     // find city by userId and by cityName
     City findByUserIdAndName(Long userId, String cityName);

@@ -25,6 +25,11 @@ public class CityController {
         return cityService.getCities();
     }
 
+    @GetMapping("/cities/{cityId}")
+    public City getCity(@PathVariable Long cityId){
+        return cityService.getCity(cityId);
+    }
+
     @PostMapping("/cities")
     public City createCity(@RequestBody City cityObject){
         return cityService.createCity(cityObject);
