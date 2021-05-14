@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "menu_items")
-public class MenuItems {
+public class MenuItem {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +30,7 @@ public class MenuItems {
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
-    public MenuItems() {
+    public MenuItem() {
     }
 
     public Long getId() {
