@@ -2,6 +2,7 @@ package finderapi.demo.controller;
 
 import finderapi.demo.model.City;
 import finderapi.demo.service.CityService;
+import finderapi.demo.service.UtilityService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

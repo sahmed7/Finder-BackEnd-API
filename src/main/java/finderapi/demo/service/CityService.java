@@ -3,6 +3,8 @@ package finderapi.demo.service;
 import finderapi.demo.exception.InformationExistException;
 import finderapi.demo.exception.InformationNotFoundException;
 import finderapi.demo.model.City;
+import finderapi.demo.model.Restaurant;
+import finderapi.demo.model.User;
 import finderapi.demo.repository.CityRepository;
 import finderapi.demo.security.MyUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,8 @@ import java.util.List;
 public class CityService {
     
     private CityRepository cityRepository;
+
+    public UtilityService utility = new UtilityService();
     
     @Autowired
     public void setCityRepository(CityRepository cityRepository) {
@@ -34,17 +38,19 @@ public class CityService {
 
     public City createCity(City cityObject) {
         System.out.println("service calling createCategory ==>");
-        MyUserDetails userDetails = (MyUserDetails) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-        City city = cityRepository.findByUserIdAndName(userDetails.getUser().getId(), cityObject.getName());
-
-        System.out.println("The city object is: ==============> " + city);
-        if(city != null) {
-            throw new InformationExistException("city with name " + cityObject.getName() + " already exists");
+        User user = utility.getAuthenticatedUser();
+        //City city = cityRepository.findByUserIdAndName(user.getId(), cityObject.getName());
+        if (cityRepository.findByUserIdAndName(user.getId(), cityObject.getName())!= null){
+            throw new InformationExistException("city exists!");
         } else {
-            System.out.println("The city object is: ==============> " + cityObject);
-            cityObject.setUser(userDetails.getUser());
+            cityObject.setUser(user);
             return cityRepository.save(cityObject);
         }
+//        System.out.println("The city is: ==============> " + city);
+//        if(city != null) {
+//            throw new InformationExistException("city with name " + cityObject.getName() + " already exists");
+//        } else {
+//            System.out.println("The city object is: ==============> " + cityObject);
+//        }
     }
 }
