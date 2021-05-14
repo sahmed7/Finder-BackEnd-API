@@ -1,4 +1,4 @@
-package finderapi.demo;
+package com.finderapi.demo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
