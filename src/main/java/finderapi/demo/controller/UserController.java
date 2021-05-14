@@ -1,8 +1,10 @@
 package finderapi.demo.controller;
 
 import finderapi.demo.model.User;
+import finderapi.demo.model.request.LoginRequest;
 import finderapi.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,8 +23,8 @@ public class UserController {
     @PostMapping(path = "/users/register")
     public User createUser(@RequestBody User userObject){return this.userService.createUser(userObject);}
 
-//    @PostMapping(path = "/users/login")
-//    public User loginUser(@RequestBody User userObject){return this.userService.loginUser(userObject);}
+    @PostMapping(path = "/users/login")
+    public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest){return this.userService.loginUser(loginRequest);}
 
 
 }
