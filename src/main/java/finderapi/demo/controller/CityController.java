@@ -3,6 +3,7 @@ package finderapi.demo.controller;
 import finderapi.demo.model.City;
 import finderapi.demo.service.CityService;
 import finderapi.demo.service.UtilityService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,6 +13,12 @@ import java.util.List;
 public class CityController {
 
     private CityService cityService;
+
+    @Autowired
+    public void setCityService(CityService cityService)
+    {
+        this.cityService = cityService;
+    }
 
     @GetMapping("/hello")
     public String helloWorld(){
