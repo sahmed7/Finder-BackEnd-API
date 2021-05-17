@@ -155,12 +155,13 @@ public class CityService {
         if (!restaurant.isPresent()) {
             throw new InformationNotFoundException("Restaurant with id " + restaurantId + " does not exist");
         }
-        Restaurant oldRestaurant = restaurantRepository.findByNameAndUserIdAndIdIsNot(
-                restaurantObject.getName(), user.getId(), restaurantId);
+        Restaurant oldRestaurant = restaurantRepository.findByAddressAndUserIdAndIdIsNot(
+                restaurantObject.getAddress(), user.getId(), restaurantId);
         if (oldRestaurant != null) {
-            throw new InformationExistException("Restaurant with name " + oldRestaurant.getName() + " already exists");
+            throw new InformationExistException("Restaurant with address " + oldRestaurant.getAddress() + " already exists");
         }
         restaurant.get().setName(restaurantObject.getName());
+        restaurant.get().setAddress(restaurantObject.getAddress());
         restaurant.get().setCategory(restaurantObject.getCategory());
         return restaurantRepository.save(restaurant.get());
     }
