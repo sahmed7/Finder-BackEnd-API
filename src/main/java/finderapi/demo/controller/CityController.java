@@ -67,41 +67,4 @@ public class CityController {
         return new ResponseEntity(message, HttpStatus.OK);
     }
 
-    // http://localhost:9092/api/cities/1/restaurants
-    @PostMapping(path = "/cities/{cityId}/restaurants")
-    public Restaurant createRestaurant(@PathVariable Long cityId, @RequestBody Restaurant restaurantObject){
-        System.out.println("calling createRestaurant ==> ");
-        return cityService.createRestaurant(cityId, restaurantObject);
-    }
-
-    // http://localhost:9092/api/cities/1/restaurants
-    @GetMapping(path = "/cities/{cityId}/restaurants")
-    public List<Restaurant> getRestaurants(@PathVariable Long cityId) {
-        System.out.println("calling getRestaurants ==> ");
-        return cityService.getRestaurants(cityId);
-    }
-
-    // http://localhost:9092/api/cities/1/restaurants/1
-    @GetMapping(path = "/cities/{cityId}/restaurants/{restaurantId}")
-    public Restaurant getSingleRestaurant(@PathVariable Long cityId, @PathVariable Long restaurantId) {
-        System.out.println("calling getSingleRestaurant ==>");
-        return cityService.getSingleRestaurant(cityId, restaurantId);
-    }
-
-    // http://localhost:9092/api/cities/1/restaurants/1
-    @PutMapping(path = "/cities/{cityId}/restaurants/{restaurantId}")
-    public Restaurant updateRestaurant(@PathVariable Long cityId, @PathVariable Long restaurantId, @RequestBody Restaurant restaurantObject) {
-        System.out.println("calling updateRestaurant ==> ");
-        return cityService.updateRestaurant(cityId, restaurantId, restaurantObject);
-    }
-
-    // http://localhost:9092/api/cities/1/restaurants/1
-    @DeleteMapping(path = "/cities/{cityId}/restaurants/{restaurantId}")
-    public ResponseEntity<HashMap> deleteRestaurant(@PathVariable Long cityId, @PathVariable Long restaurantId) {
-        System.out.println("calling deleteRestaurant ==> ");
-        cityService.deleteRestaurant(cityId, restaurantId);
-        HashMap responseMessage = new HashMap();
-        responseMessage.put("Status", "Restaurant with id: "+ restaurantId + " was successfully deleted!");
-        return new ResponseEntity<HashMap>(responseMessage, HttpStatus.OK);
-    }
 }
