@@ -113,4 +113,15 @@ public class CityService {
         restaurantObject.setCategory(restaurantObject.getCategory());
         return restaurantRepository.save(restaurantObject);
     }
+
+    // Get all restaurants of a single city
+    public List<Restaurant> getRestaurants(Long cityId) {
+        System.out.println("service calling getRestaurants ==>");
+        User user = utility.getAuthenticatedUser();
+        City city = cityRepository.findByIdAndUserId(cityId, user.getId());
+        if (city == null) {
+            throw new InformationNotFoundException("City with id " + cityId + " " + "does not exist");
+        }
+        return city.getRestaurantList();
+    }
 }

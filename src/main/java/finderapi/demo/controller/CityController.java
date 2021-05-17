@@ -73,4 +73,11 @@ public class CityController {
         System.out.println("calling createRestaurant ==> ");
         return cityService.createRestaurant(cityId, restaurantObject);
     }
+
+    // http://localhost:9092/api/cities/1/restaurants
+    @GetMapping(path = "/cities/{cityId}/restaurants")
+    public List<Restaurant> getRestaurants(@PathVariable Long cityId) {
+        System.out.println("calling getRestaurants ==> ");
+        return cityService.getRestaurants(cityId);
+    }
 }
