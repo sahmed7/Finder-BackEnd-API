@@ -33,4 +33,11 @@ public class MenuItemController {
         System.out.println("calling createMenuItem ==> ");
         return menuItemService.createMenuItem(cityId, restaurantId, menuItemObject);
     }
+
+    // http://localhost:9092/api/cities/1/restaurants/1/menu
+    @GetMapping(path = "/cities/{cityId}/restaurants/{restaurantId}/menu")
+    public List<MenuItem> getMenuItems(@PathVariable Long cityId, @PathVariable Long restaurantId) {
+        System.out.println("calling getMenuItems ==> ");
+        return menuItemService.getMenuItems(cityId, restaurantId);
+    }
 }

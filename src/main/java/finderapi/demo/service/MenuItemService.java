@@ -40,6 +40,7 @@ public class MenuItemService {
         this.menuItemRepository = menuItemRepository;
     }
 
+    // Create a menuItem for a single restaurant
     public MenuItem createMenuItem(Long cityId, Long restaurantId, MenuItem menuItemObject) {
         System.out.println("service calling createMenuItem ==>");
         User user = utility.getAuthenticatedUser();
@@ -62,5 +63,20 @@ public class MenuItemService {
         menuItemObject.setName(menuItemObject.getName());
         menuItemObject.setDescription(menuItemObject.getDescription());
         return menuItemRepository.save(menuItemObject);
+    }
+
+    // Get all menuItems of a single restaurant
+    public List<MenuItem> getMenuItems(Long cityId, Long restaurantId) {
+        System.out.println("service calling getMenuItems ==>");
+        User user = utility.getAuthenticatedUser();
+        City city = cityRepository.findByIdAndUserId(cityId, user.getId());
+        if (city == null) {
+            throw new InformationNotFoundException("City with id " + cityId + " " + " does not exist");
+        }
+        Restaurant restaurant = restaurantRepository.findByIdAndUserId(restaurantId, user.getId());
+        if (restaurant == null) {
+            throw new InformationExistException("Restaurant with id " + restaurant.getId() + " already exists");
+        }
+        return restaurant.getMenuItemList();
     }
 }
