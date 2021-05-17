@@ -17,7 +17,11 @@ public class Restaurant {
     private String name;
 
     @Column
+    private String address;
+
+    @Column
     private String category;
+
 
     /********** add user **********/
     @ManyToOne
@@ -82,6 +86,14 @@ public class Restaurant {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
     /********** user getters and setters **********/
 }

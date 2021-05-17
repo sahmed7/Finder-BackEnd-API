@@ -103,13 +103,14 @@ public class CityService {
             throw new InformationNotFoundException(
                     "City with id " + cityId + " does not exist");
         }
-        Restaurant restaurant = restaurantRepository.findByNameAndUserId(restaurantObject.getName(), user.getId());
+        Restaurant restaurant = restaurantRepository.findByAddressAndUserId(restaurantObject.getAddress(), user.getId());
         if (restaurant != null) {
-            throw new InformationExistException("Restaurant with name " + restaurant.getName() + " already exists");
+            throw new InformationExistException("Restaurant with address " + restaurant.getAddress() + " already exists");
         }
         restaurantObject.setUser(user);
         restaurantObject.setCity(city);
         restaurantObject.setName(restaurantObject.getName());
+        restaurantObject.setAddress(restaurantObject.getAddress());
         restaurantObject.setCategory(restaurantObject.getCategory());
         return restaurantRepository.save(restaurantObject);
     }
