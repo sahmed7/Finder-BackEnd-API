@@ -76,7 +76,7 @@ public class RestaurantService {
         Optional<Restaurant> restaurant = restaurantRepository.findByCityId(
                 cityId).stream().filter(p -> p.getId().equals(restaurantId)).findFirst();
         if (!restaurant.isPresent()) {
-            throw new InformationNotFoundException("Restaurant with id " + restaurantId + "does not exist");
+            throw new InformationNotFoundException("Restaurant with id " + restaurantId + " does not exist");
         }
         return restaurant.get();
     }

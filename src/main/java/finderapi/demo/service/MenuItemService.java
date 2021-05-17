@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,5 +79,26 @@ public class MenuItemService {
             throw new InformationExistException("Restaurant with id " + restaurant.getId() + " already exists");
         }
         return restaurant.getMenuItemList();
+    }
+
+    // Get single MenuItem of a single restaurant
+    public MenuItem getSingleMenuItem(Long cityId, Long restaurantId, Long menuItemId) {
+        System.out.println("service calling getSingleMenuItem ==>");
+        User user = utility.getAuthenticatedUser();
+        City city = cityRepository.findByIdAndUserId(cityId, user.getId());
+        if (city == null) {
+            throw new InformationNotFoundException("City with id " + cityId + " does not exist");
+        }
+        Optional<Restaurant> restaurant = restaurantRepository.findByCityId(
+                cityId).stream().filter(p -> p.getId().equals(restaurantId)).findFirst();
+        if (!restaurant.isPresent()) {
+            throw new InformationNotFoundException("Restaurant with id " + restaurantId + " does not exist");
+        }
+        Optional<MenuItem> menuItem = menuItemRepository.findByRestaurantId(
+                restaurantId).stream().filter(p -> p.getId().equals(menuItemId)).findFirst();
+        if (!menuItem.isPresent()) {
+            throw new InformationNotFoundException("MenuItem with id " + menuItemId + " does not exist");
+        }
+        return menuItem.get();
     }
 }

@@ -40,4 +40,11 @@ public class MenuItemController {
         System.out.println("calling getMenuItems ==> ");
         return menuItemService.getMenuItems(cityId, restaurantId);
     }
+
+    // http://localhost:9092/api/cities/1/restaurants/1/menu/1
+    @GetMapping(path = "/cities/{cityId}/restaurants/{restaurantId}/menu/{menuItemId}")
+    public MenuItem getSingleMenuItem(@PathVariable Long cityId, @PathVariable Long restaurantId, @PathVariable Long menuItemId) {
+        System.out.println("calling getSingleMenuItem ==>");
+        return menuItemService.getSingleMenuItem(cityId, restaurantId, menuItemId);
+    }
 }
