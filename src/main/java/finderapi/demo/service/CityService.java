@@ -60,6 +60,7 @@ public class CityService {
         }
     }
 
+    // Update a single city
     public City updateCity(Long cityId, City cityObject) {
         System.out.println("service calling updateCity ==>");
         User user = utility.getAuthenticatedUser();
@@ -69,6 +70,19 @@ public class CityService {
         } else {
             city.setName(cityObject.getName());
             return cityRepository.save(city);
+        }
+    }
+
+    // Delete a single city
+    public String deleteCity(Long cityId) {
+        System.out.println("service calling deleteCity ==>");
+        User user = utility.getAuthenticatedUser();
+        City city = cityRepository.findByIdAndUserId(cityId, user.getId());
+        if (city == null) {
+            throw new InformationNotFoundException("City with id " + cityId + " not found");
+        } else {
+            cityRepository.deleteById(cityId);
+            return "City with id " + cityId + " has been successfully deleted";
         }
     }
 }

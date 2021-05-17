@@ -3,8 +3,11 @@ package finderapi.demo.controller;
 import finderapi.demo.model.City;
 import finderapi.demo.service.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,6 +54,16 @@ public class CityController {
     public City updateCity(@PathVariable Long cityId, @RequestBody City cityObject){
         System.out.println("calling updateCity ==> ");
         return cityService.updateCity(cityId, cityObject);
+    }
+
+    //http://localhost:9092/api/cities/1
+    @DeleteMapping(path = "/cities/{cityId}")  //user is entering/passing the id anyway, use it
+    public ResponseEntity<HashMap> deleteCity(@PathVariable Long cityId) {
+        System.out.println("calling deleteCity ==>");
+        String status = cityService.deleteCity(cityId);
+        HashMap message = new HashMap();
+        message.put("status", status);
+        return new ResponseEntity(message, HttpStatus.OK);
     }
 
 }
