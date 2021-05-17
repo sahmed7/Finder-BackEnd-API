@@ -14,4 +14,6 @@ public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
 
     List<MenuItem> findByRestaurantId(Long menuItemId);
 
+    MenuItem findByNameAndUserIdAndIdIsNot(String menuItemName, Long userId, Long menuItemId);
+
 }

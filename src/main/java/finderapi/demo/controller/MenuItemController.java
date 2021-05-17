@@ -47,4 +47,11 @@ public class MenuItemController {
         System.out.println("calling getSingleMenuItem ==>");
         return menuItemService.getSingleMenuItem(cityId, restaurantId, menuItemId);
     }
+
+    // http://localhost:9092/api/cities/1/restaurants/1/menu/1
+    @PutMapping(path = "/cities/{cityId}/restaurants/{restaurantId}/menu/{menuItemId}")
+    public MenuItem updateMenuItem(@PathVariable Long cityId, @PathVariable Long restaurantId, @PathVariable Long menuItemId, @RequestBody MenuItem menuItemObject) {
+        System.out.println("calling updateMenuItem ==> ");
+        return menuItemService.updateMenuItem(cityId, restaurantId, menuItemId, menuItemObject);
+    }
 }
