@@ -163,4 +163,20 @@ public class CityService {
         restaurant.get().setCategory(restaurantObject.getCategory());
         return restaurantRepository.save(restaurant.get());
     }
+
+    // Delete a single Restaurant
+    public void deleteRestaurant(Long cityId, Long restaurantId) {
+        System.out.println("service calling deleteCategoryRecipe ==>");
+        User user = utility.getAuthenticatedUser();
+        City city = cityRepository.findByIdAndUserId(cityId, user.getId());
+        if (city == null) {
+            throw new InformationNotFoundException("City with id " + cityId + " does not exist");
+        }
+        Optional<Restaurant> restaurant = restaurantRepository.findByCityId(
+                cityId).stream().filter(p -> p.getId().equals(restaurantId)).findFirst();
+        if (!restaurant.isPresent()) {
+            throw new InformationNotFoundException("Restaurant with id " + restaurantId + " does not exist");
+        }
+        restaurantRepository.deleteById(restaurant.get().getId());
+    }
 }

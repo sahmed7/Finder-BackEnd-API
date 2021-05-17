@@ -94,4 +94,14 @@ public class CityController {
         System.out.println("calling updateRestaurant ==> ");
         return cityService.updateRestaurant(cityId, restaurantId, restaurantObject);
     }
+
+    // http://localhost:9092/api/cities/1/restaurants/1
+    @DeleteMapping(path = "/cities/{cityId}/restaurants/{restaurantId}")
+    public ResponseEntity<HashMap> deleteRestaurant(@PathVariable Long cityId, @PathVariable Long restaurantId) {
+        System.out.println("calling deleteRestaurant ==> ");
+        cityService.deleteRestaurant(cityId, restaurantId);
+        HashMap responseMessage = new HashMap();
+        responseMessage.put("Status", "Restaurant with id: "+ restaurantId + " was successfully deleted!");
+        return new ResponseEntity<HashMap>(responseMessage, HttpStatus.OK);
+    }
 }
