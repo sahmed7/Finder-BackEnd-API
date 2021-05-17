@@ -6,6 +6,7 @@ import finderapi.demo.model.City;
 import finderapi.demo.model.User;
 import finderapi.demo.repository.CityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -56,6 +57,18 @@ public class CityService {
             return city;
             } else {
             throw new InformationNotFoundException("city with id " + cityId + " not found");
+        }
+    }
+
+    public City updateCity(Long cityId, City cityObject) {
+        System.out.println("service calling updateCity ==>");
+        User user = utility.getAuthenticatedUser();
+        City city = cityRepository.findByIdAndUserId(cityId, user.getId());
+        if (city == null) {
+            throw new InformationNotFoundException("city with id " + cityId + " not found");
+        } else {
+            city.setName(cityObject.getName());
+            return cityRepository.save(city);
         }
     }
 }

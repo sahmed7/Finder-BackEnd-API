@@ -46,4 +46,11 @@ public class CityController {
         return cityService.getSingleCity(cityId);
     }
 
+    //http://localhost:9092/api/cities/1
+    @PutMapping(path = "/cities/{cityId}")
+    public City updateCity(@PathVariable Long cityId, @RequestBody City cityObject){
+        System.out.println("calling updateCity ==> ");
+        return cityService.updateCity(cityId, cityObject);
+    }
+
 }
