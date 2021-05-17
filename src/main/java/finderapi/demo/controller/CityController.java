@@ -87,4 +87,11 @@ public class CityController {
         System.out.println("calling getSingleRestaurant ==>");
         return cityService.getSingleRestaurant(cityId, restaurantId);
     }
+
+    // http://localhost:9092/api/cities/1/restaurants/1
+    @PutMapping(path = "/cities/{cityId}/restaurants/{restaurantId}")
+    public Restaurant updateRestaurant(@PathVariable Long cityId, @PathVariable Long restaurantId, @RequestBody Restaurant restaurantObject) {
+        System.out.println("calling updateRestaurant ==> ");
+        return cityService.updateRestaurant(cityId, restaurantId, restaurantObject);
+    }
 }

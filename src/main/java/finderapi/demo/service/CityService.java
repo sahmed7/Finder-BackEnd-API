@@ -120,7 +120,7 @@ public class CityService {
         User user = utility.getAuthenticatedUser();
         City city = cityRepository.findByIdAndUserId(cityId, user.getId());
         if (city == null) {
-            throw new InformationNotFoundException("City with id " + cityId + " " + "does not exist");
+            throw new InformationNotFoundException("City with id " + cityId + " " + " does not exist");
         }
         return city.getRestaurantList();
     }
@@ -131,7 +131,7 @@ public class CityService {
         User user = utility.getAuthenticatedUser();
         City city = cityRepository.findByIdAndUserId(cityId, user.getId());
         if (city == null) {
-            throw new InformationNotFoundException("City with id " + cityId + "does not exist");
+            throw new InformationNotFoundException("City with id " + cityId + " does not exist");
         }
         Optional<Restaurant> restaurant = restaurantRepository.findByCityId(
                 cityId).stream().filter(p -> p.getId().equals(restaurantId)).findFirst();
@@ -139,5 +139,28 @@ public class CityService {
             throw new InformationNotFoundException("Restaurant with id " + restaurantId + "does not exist");
         }
         return restaurant.get();
+    }
+
+    // Update single restaurant
+    public Restaurant updateRestaurant(Long cityId, Long restaurantId, Restaurant restaurantObject) {
+        System.out.println("service calling updateRestaurant ==>");
+        User user = utility.getAuthenticatedUser();
+        City city = cityRepository.findByIdAndUserId(cityId, user.getId());
+        if (city == null) {
+            throw new InformationNotFoundException("City with id " + cityId + " does not exist");
+        }
+        Optional<Restaurant> restaurant = restaurantRepository.findByCityId(
+                cityId).stream().filter(p -> p.getId().equals(restaurantId)).findFirst();
+        if (!restaurant.isPresent()) {
+            throw new InformationNotFoundException("Restaurant with id " + restaurantId + " does not exist");
+        }
+        Restaurant oldRestaurant = restaurantRepository.findByNameAndUserIdAndIdIsNot(
+                restaurantObject.getName(), user.getId(), restaurantId);
+        if (oldRestaurant != null) {
+            throw new InformationExistException("Restaurant with name " + oldRestaurant.getName() + " already exists");
+        }
+        restaurant.get().setName(restaurantObject.getName());
+        restaurant.get().setCategory(restaurantObject.getCategory());
+        return restaurantRepository.save(restaurant.get());
     }
 }
