@@ -1,8 +1,11 @@
 package finderapi.demo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "restaurants")
@@ -22,6 +25,9 @@ public class Restaurant {
     @Column
     private String category;
 
+    @OneToMany(mappedBy = "restaurant", orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<MenuItem> menuItemList;
 
     /********** add user **********/
     @ManyToOne
@@ -68,6 +74,14 @@ public class Restaurant {
                 ", name='" + name + '\'' +
                 ", category='" + category + '\'' +
                 '}';
+    }
+
+    public List<MenuItem> getMenuItemList() {
+        return menuItemList;
+    }
+
+    public void setMenuItemList(List<MenuItem> menuItemList) {
+        this.menuItemList = menuItemList;
     }
 
     public City getCity() {
