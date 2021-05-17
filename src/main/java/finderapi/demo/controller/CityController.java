@@ -1,6 +1,7 @@
 package finderapi.demo.controller;
 
 import finderapi.demo.model.City;
+import finderapi.demo.model.Restaurant;
 import finderapi.demo.service.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -66,4 +67,10 @@ public class CityController {
         return new ResponseEntity(message, HttpStatus.OK);
     }
 
+    // http://localhost:9092/api/cities/1/restaurants
+    @PostMapping(path = "/cities/{cityId}/restaurants")
+    public Restaurant createRestaurant(@PathVariable Long cityId, @RequestBody Restaurant restaurantObject){
+        System.out.println("calling createRestaurant ==> ");
+        return cityService.createRestaurant(cityId, restaurantObject);
+    }
 }

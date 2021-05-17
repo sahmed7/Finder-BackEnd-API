@@ -3,8 +3,10 @@ package finderapi.demo.service;
 import finderapi.demo.exception.InformationExistException;
 import finderapi.demo.exception.InformationNotFoundException;
 import finderapi.demo.model.City;
+import finderapi.demo.model.Restaurant;
 import finderapi.demo.model.User;
 import finderapi.demo.repository.CityRepository;
+import finderapi.demo.repository.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -16,12 +18,18 @@ import java.util.Optional;
 public class CityService {
     
     private CityRepository cityRepository;
+    private RestaurantRepository restaurantRepository;
 
     public UtilityService utility = new UtilityService();
     
     @Autowired
     public void setCityRepository(CityRepository cityRepository) {
         this.cityRepository = cityRepository;
+    }
+
+    @Autowired
+    public void setRestaurantRepository(RestaurantRepository restaurantRepository){
+        this.restaurantRepository = restaurantRepository;
     }
 
     // Create a city
@@ -84,5 +92,25 @@ public class CityService {
             cityRepository.deleteById(cityId);
             return "City with id " + cityId + " has been successfully deleted";
         }
+    }
+
+    // Create a restaurant for single city
+    public Restaurant createRestaurant(Long cityId, Restaurant restaurantObject) {
+        System.out.println("service calling createRestaurant ==>");
+        User user = utility.getAuthenticatedUser();
+        City city = cityRepository.findByIdAndUserId(cityId, user.getId());
+        if (city == null) {
+            throw new InformationNotFoundException(
+                    "City with id " + cityId + " does not exist");
+        }
+        Restaurant restaurant = restaurantRepository.findByNameAndUserId(restaurantObject.getName(), user.getId());
+        if (restaurant != null) {
+            throw new InformationExistException("Restaurant with name " + restaurant.getName() + " already exists");
+        }
+        restaurantObject.setUser(user);
+        restaurantObject.setCity(city);
+        restaurantObject.setName(restaurantObject.getName());
+        restaurantObject.setCategory(restaurantObject.getCategory());
+        return restaurantRepository.save(restaurantObject);
     }
 }
