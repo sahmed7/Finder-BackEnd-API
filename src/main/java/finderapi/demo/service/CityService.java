@@ -35,13 +35,13 @@ public class CityService {
     // Create a city
     public City createCity(City cityObject) {
         System.out.println("service calling createCategory ==>");
-        User user = utility.getAuthenticatedUser();
-        City city = cityRepository.findByUserIdAndName(user.getId(), cityObject.getName());
-
-        if(city != null) {
+        //User user = utility.getAuthenticatedUser();
+        //City city = cityRepository.findByUserIdAndName(user.getId(), cityObject.getName());
+        City city = cityRepository.findByName(cityObject.getName());
+        if(city!=null) {
             throw new InformationExistException("city with name " + cityObject.getName() + " already exists");
         } else {
-            cityObject.setUser(user);
+            //cityObject.setUser(user);
             return cityRepository.save(cityObject);
         }
     }
@@ -71,8 +71,8 @@ public class CityService {
     // Update a single city
     public City updateCity(Long cityId, City cityObject) {
         System.out.println("service calling updateCity ==>");
-        User user = utility.getAuthenticatedUser();
-        City city = cityRepository.findByIdAndUserId(cityId, user.getId());
+        //User user = utility.getAuthenticatedUser();
+        City city = cityRepository.findByName(cityObject.getName());
         if (city == null) {
             throw new InformationNotFoundException("city with id " + cityId + " not found");
         } else {
