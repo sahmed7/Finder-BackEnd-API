@@ -36,17 +36,16 @@ public class RestaurantService {
     public Restaurant createRestaurant(Long cityId, Restaurant restaurantObject) {
         System.out.println("service calling createRestaurant ==>");
         User user = utility.getAuthenticatedUser();
-        City city = cityRepository.findByIdAndUserId(cityId, user.getId());
-        if (city == null) {
-            throw new InformationNotFoundException(
-                    "City with id " + cityId + " does not exist");
+        Optional<City> city = cityRepository.findById(cityId);
+        if (!city.isPresent()) {
+            throw new InformationNotFoundException("City with id " + cityId + " does not exist");
         }
         Restaurant restaurant = restaurantRepository.findByAddressAndUserId(restaurantObject.getAddress(), user.getId());
         if (restaurant != null) {
             throw new InformationExistException("Restaurant with address " + restaurant.getAddress() + " already exists");
         }
         restaurantObject.setUser(user);
-        restaurantObject.setCity(city);
+        restaurantObject.setCity(city.get());
         restaurantObject.setName(restaurantObject.getName());
         restaurantObject.setAddress(restaurantObject.getAddress());
         restaurantObject.setCategory(restaurantObject.getCategory());
@@ -57,19 +56,19 @@ public class RestaurantService {
     public List<Restaurant> getRestaurants(Long cityId) {
         System.out.println("service calling getRestaurants ==>");
         User user = utility.getAuthenticatedUser();
-        City city = cityRepository.findByIdAndUserId(cityId, user.getId());
-        if (city == null) {
+        Optional<City> city = cityRepository.findById(cityId);
+        if (!city.isPresent()) {
             throw new InformationNotFoundException("City with id " + cityId + " " + " does not exist");
         }
-        return city.getRestaurantList();
+        return city.get().getRestaurantList();
     }
 
     // Get single restaurant of a single city
     public Restaurant getSingleRestaurant(Long cityId, Long restaurantId) {
         System.out.println("service calling getSingleRestaurant ==>");
         User user = utility.getAuthenticatedUser();
-        City city = cityRepository.findByIdAndUserId(cityId, user.getId());
-        if (city == null) {
+        Optional<City> city = cityRepository.findById(cityId);
+        if (!city.isPresent()) {
             throw new InformationNotFoundException("City with id " + cityId + " does not exist");
         }
         Optional<Restaurant> restaurant = restaurantRepository.findByCityId(
@@ -84,14 +83,14 @@ public class RestaurantService {
     public Restaurant updateRestaurant(Long cityId, Long restaurantId, Restaurant restaurantObject) {
         System.out.println("service calling updateRestaurant ==>");
         User user = utility.getAuthenticatedUser();
-        City city = cityRepository.findByIdAndUserId(cityId, user.getId());
-        if (city == null) {
+        Optional<City> city = cityRepository.findById(cityId);
+        if (!city.isPresent()) {
             throw new InformationNotFoundException("City with id " + cityId + " does not exist");
         }
-        Optional<Restaurant> restaurant = restaurantRepository.findByCityId(
-                cityId).stream().filter(p -> p.getId().equals(restaurantId)).findFirst();
+        Optional<Restaurant> restaurant = restaurantRepository.findByCityIdAndUserId(
+                cityId, user.getId()).stream().filter(p -> p.getId().equals(restaurantId)).findFirst();
         if (!restaurant.isPresent()) {
-            throw new InformationNotFoundException("Restaurant with id " + restaurantId + " does not exist");
+            throw new InformationNotFoundException("Restaurant with id " + restaurantId + " does not exist or does not belong to this user");
         }
         Restaurant oldRestaurant = restaurantRepository.findByAddressAndUserIdAndIdIsNot(
                 restaurantObject.getAddress(), user.getId(), restaurantId);
@@ -108,14 +107,14 @@ public class RestaurantService {
     public void deleteRestaurant(Long cityId, Long restaurantId) {
         System.out.println("service calling deleteCategoryRecipe ==>");
         User user = utility.getAuthenticatedUser();
-        City city = cityRepository.findByIdAndUserId(cityId, user.getId());
-        if (city == null) {
+        Optional<City> city = cityRepository.findById(cityId);
+        if (!city.isPresent()) {
             throw new InformationNotFoundException("City with id " + cityId + " does not exist");
         }
-        Optional<Restaurant> restaurant = restaurantRepository.findByCityId(
-                cityId).stream().filter(p -> p.getId().equals(restaurantId)).findFirst();
+        Optional<Restaurant> restaurant = restaurantRepository.findByCityIdAndUserId(
+                cityId, user.getId()).stream().filter(p -> p.getId().equals(restaurantId)).findFirst();
         if (!restaurant.isPresent()) {
-            throw new InformationNotFoundException("Restaurant with id " + restaurantId + " does not exist");
+            throw new InformationNotFoundException("Restaurant with id " + restaurantId + " does not exist or does not belong to this user");
         }
         restaurantRepository.deleteById(restaurant.get().getId());
     }

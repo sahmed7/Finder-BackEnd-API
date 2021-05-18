@@ -1,7 +1,6 @@
 package finderapi.demo.controller;
 
 import finderapi.demo.model.City;
-import finderapi.demo.model.Restaurant;
 import finderapi.demo.service.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

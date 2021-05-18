@@ -44,9 +44,8 @@ public class MenuItemService {
     public MenuItem createMenuItem(Long cityId, Long restaurantId, MenuItem menuItemObject) {
         System.out.println("service calling createMenuItem ==>");
         User user = utility.getAuthenticatedUser();
-        City city = cityRepository.findByIdAndUserId(cityId, user.getId());
-
-        if (city == null) {
+        Optional<City> city = cityRepository.findById(cityId);
+        if (!city.isPresent()) {
             throw new InformationNotFoundException(
                     "City with id " + cityId + " does not exist");
         }
@@ -56,7 +55,7 @@ public class MenuItemService {
         }
         MenuItem menuItem = menuItemRepository.findByIdAndUserId(menuItemObject.getId(), user.getId());
         if (menuItem != null){
-            throw new InformationExistException("MenuItem with id " + menuItem.getId() + " already exists");
+            throw new InformationExistException("MenuItem with id " + menuItem.getId() + " already exists or belongs to another restaurant");
         }
         menuItemObject.setUser(user);
         menuItemObject.setRestaurant(restaurant);
@@ -69,23 +68,24 @@ public class MenuItemService {
     public List<MenuItem> getMenuItems(Long cityId, Long restaurantId) {
         System.out.println("service calling getMenuItems ==>");
         User user = utility.getAuthenticatedUser();
-        City city = cityRepository.findByIdAndUserId(cityId, user.getId());
-        if (city == null) {
+        Optional<City> city = cityRepository.findById(cityId);
+        if (!city.isPresent()) {
             throw new InformationNotFoundException("City with id " + cityId + " " + " does not exist");
         }
-        Restaurant restaurant = restaurantRepository.findByIdAndUserId(restaurantId, user.getId());
-        if (restaurant == null) {
-            throw new InformationExistException("Restaurant with id " + restaurant.getId() + " already exists");
+        Optional<Restaurant> restaurant = restaurantRepository.findByCityId(
+                cityId).stream().filter(p -> p.getId().equals(restaurantId)).findFirst();
+        if (!restaurant.isPresent()) {
+            throw new InformationExistException("Restaurant with id " + restaurant.get().getId() + " already exists");
         }
-        return restaurant.getMenuItemList();
+        return restaurant.get().getMenuItemList();
     }
 
     // Get single MenuItem of a single restaurant
     public MenuItem getSingleMenuItem(Long cityId, Long restaurantId, Long menuItemId) {
         System.out.println("service calling getSingleMenuItem ==>");
         User user = utility.getAuthenticatedUser();
-        City city = cityRepository.findByIdAndUserId(cityId, user.getId());
-        if (city == null) {
+        Optional<City> city = cityRepository.findById(cityId);
+        if (!city.isPresent()) {
             throw new InformationNotFoundException("City with id " + cityId + " does not exist");
         }
         Optional<Restaurant> restaurant = restaurantRepository.findByCityId(
@@ -105,19 +105,19 @@ public class MenuItemService {
     public MenuItem updateMenuItem(Long cityId, Long restaurantId, Long menuItemId, MenuItem menuItemObject) {
         System.out.println("service calling updateMenuItem ==>");
         User user = utility.getAuthenticatedUser();
-        City city = cityRepository.findByIdAndUserId(cityId, user.getId());
-        if (city == null) {
+        Optional<City> city = cityRepository.findById(cityId);
+        if (!city.isPresent()) {
             throw new InformationNotFoundException("City with id " + cityId + " does not exist");
         }
-        Optional<Restaurant> restaurant = restaurantRepository.findByCityId(
-                cityId).stream().filter(p -> p.getId().equals(restaurantId)).findFirst();
+        Optional<Restaurant> restaurant = restaurantRepository.findByCityIdAndUserId(
+                cityId, user.getId()).stream().filter(p -> p.getId().equals(restaurantId)).findFirst();
         if (!restaurant.isPresent()) {
-            throw new InformationNotFoundException("Restaurant with id " + restaurantId + " does not exist");
+            throw new InformationNotFoundException("Restaurant with id " + restaurantId + " does not exist or does not belong to this user");
         }
-        Optional<MenuItem> menuItem = menuItemRepository.findByRestaurantId(
-                restaurantId).stream().filter(p -> p.getId().equals(menuItemId)).findFirst();
+        Optional<MenuItem> menuItem = menuItemRepository.findByRestaurantIdAndUserId(
+                restaurantId, user.getId()).stream().filter(p -> p.getId().equals(menuItemId)).findFirst();
         if (!menuItem.isPresent()) {
-            throw new InformationNotFoundException("Menu Item with id " + menuItemId + " does not exist");
+            throw new InformationNotFoundException("Menu Item with id " + menuItemId + " does not exist or does not belong to this user");
         }
         MenuItem oldMenuItem = menuItemRepository.findByNameAndUserIdAndIdIsNot(
                 menuItemObject.getName(), user.getId(), menuItemId);
@@ -133,19 +133,19 @@ public class MenuItemService {
     public void deleteMenuItem(Long cityId, Long restaurantId, Long menuItemId) {
         System.out.println("service calling deleteMenuItem ==>");
         User user = utility.getAuthenticatedUser();
-        City city = cityRepository.findByIdAndUserId(cityId, user.getId());
-        if (city == null) {
+        Optional<City> city = cityRepository.findById(cityId);
+        if (!city.isPresent()) {
             throw new InformationNotFoundException("City with id " + cityId + " does not exist");
         }
-        Optional<Restaurant> restaurant = restaurantRepository.findByCityId(
-                cityId).stream().filter(p -> p.getId().equals(restaurantId)).findFirst();
+        Optional<Restaurant> restaurant = restaurantRepository.findByCityIdAndUserId(
+                cityId, user.getId()).stream().filter(p -> p.getId().equals(restaurantId)).findFirst();
         if (!restaurant.isPresent()) {
             throw new InformationNotFoundException("Restaurant with id " + restaurantId + " does not exist");
         }
-        Optional<MenuItem> menuItem = menuItemRepository.findByRestaurantId(
-                restaurantId).stream().filter(p -> p.getId().equals(menuItemId)).findFirst();
+        Optional<MenuItem> menuItem = menuItemRepository.findByRestaurantIdAndUserId(
+                restaurantId, user.getId()).stream().filter(p -> p.getId().equals(menuItemId)).findFirst();
         if (!menuItem.isPresent()) {
-            throw new InformationNotFoundException("Menu Item with id " + menuItemId + " does not exist");
+            throw new InformationNotFoundException("Menu Item with id " + menuItemId + " does not exist or does not belong to this user");
         }
         menuItemRepository.deleteById(menuItem.get().getId());
     }

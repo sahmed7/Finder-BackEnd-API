@@ -8,7 +8,6 @@ import finderapi.demo.model.User;
 import finderapi.demo.repository.CityRepository;
 import finderapi.demo.repository.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,8 +34,8 @@ public class CityService {
     // Create a city
     public City createCity(City cityObject) {
         System.out.println("service calling createCategory ==>");
-        //User user = utility.getAuthenticatedUser();
-        //City city = cityRepository.findByUserIdAndName(user.getId(), cityObject.getName());
+        // User user = utility.getAuthenticatedUser();
+        // City city = cityRepository.findByUserIdAndName(user.getId(), cityObject.getName());
         City city = cityRepository.findByName(cityObject.getName());
         if(city!=null) {
             throw new InformationExistException("city with name " + cityObject.getName() + " already exists");
@@ -59,7 +58,6 @@ public class CityService {
     // Get a single city
     public Optional<City> getSingleCity(Long cityId) {
         System.out.println("service calling getCity ==>");
-
         Optional<City> city = cityRepository.findById(cityId);
         if (city.isPresent()) {
             return city;
@@ -72,12 +70,12 @@ public class CityService {
     public City updateCity(Long cityId, City cityObject) {
         System.out.println("service calling updateCity ==>");
         //User user = utility.getAuthenticatedUser();
-        City city = cityRepository.findByName(cityObject.getName());
-        if (city == null) {
+        Optional<City> city = cityRepository.findById(cityId);
+        if (!city.isPresent()) {
             throw new InformationNotFoundException("city with id " + cityId + " not found");
         } else {
-            city.setName(cityObject.getName());
-            return cityRepository.save(city);
+            city.get().setName(cityObject.getName());
+            return cityRepository.save(city.get());
         }
     }
 
@@ -85,12 +83,16 @@ public class CityService {
     public String deleteCity(Long cityId) {
         System.out.println("service calling deleteCity ==>");
         User user = utility.getAuthenticatedUser();
-        City city = cityRepository.findByIdAndUserId(cityId, user.getId());
+        Optional<City> city = cityRepository.findById(cityId);
+        List<Restaurant> restaurantList = city.get().getRestaurantList();
         if (city == null) {
             throw new InformationNotFoundException("City with id " + cityId + " not found");
-        } else {
+        }
+        if (restaurantList.isEmpty()) {
             cityRepository.deleteById(cityId);
             return "City with id " + cityId + " has been successfully deleted";
+        } else {
+            throw new InformationExistException("Sorry, cannot delete " + city.get().getName() + " city because it has restaurants in it");
         }
     }
 
