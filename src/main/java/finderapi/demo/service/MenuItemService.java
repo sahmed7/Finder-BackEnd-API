@@ -53,9 +53,9 @@ public class MenuItemService {
         if (restaurant == null) {
             throw new InformationExistException("Restaurant with id " + restaurant.getId() + " already exists");
         }
-        MenuItem menuItem = menuItemRepository.findByIdAndUserId(menuItemObject.getId(), user.getId());
+        MenuItem menuItem = menuItemRepository.findByNameAndUserId(menuItemObject.getName(), user.getId());
         if (menuItem != null){
-            throw new InformationExistException("MenuItem with id " + menuItem.getId() + " already exists or belongs to another restaurant");
+            throw new InformationExistException("MenuItem " + menuItem.getName() + " already exists");
         }
         menuItemObject.setUser(user);
         menuItemObject.setRestaurant(restaurant);
